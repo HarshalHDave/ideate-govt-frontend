@@ -1,0 +1,170 @@
+import { Helmet } from 'react-helmet-async';
+import { faker } from '@faker-js/faker';
+// @mui
+import { useTheme } from '@mui/material/styles';
+import { Grid, Container, Typography } from '@mui/material';
+// components
+import Iconify from '../components/iconify';
+// sections
+import {
+  AppTasks,
+  AppNewsUpdate,
+  AppOrderTimeline,
+  AppCurrentVisits,
+  AppWebsiteVisits,
+  AppTrafficBySite,
+  AppWidgetSummary,
+  AppCurrentSubject,
+  AppConversionRates,
+} from '../sections/@dashboard/app';
+
+// ----------------------------------------------------------------------
+
+export default function DashboardAppPage() {
+  const theme = useTheme();
+
+  return (
+    <>
+      <Helmet>
+        <title> Dashboard </title>
+      </Helmet>
+
+      <Container maxWidth="xl">
+        <Typography variant="h4" sx={{ mb: 5 }}>
+          Hi, Welcome back
+        </Typography>
+
+        <Grid container spacing={3}>
+          <Grid item xs={12} sm={6} md={3}>
+            <AppWidgetSummary title="Potholes" total={714000} icon={'fluent-emoji-high-contrast:hole'} />
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <AppWidgetSummary title="Manholes" total={1352831} color="info" icon={'fa6-solid:person-falling'} />
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <AppWidgetSummary title="Street Lights" total={1723315} color="warning" icon={'game-icons:double-street-lights'} />
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <AppWidgetSummary title="Accidents" total={234} color="error" icon={'maki:road-accident'} />
+          </Grid>
+
+          <Grid item xs={12} md={6} lg={8}>
+            <AppWebsiteVisits
+              title="User Reporting"
+              subheader="(+43%) than last year"
+              chartLabels={[
+                '01/01/2022',
+                '02/01/2022',
+                '03/01/2022',
+                '04/01/2022',
+                '05/01/2022',
+                '06/01/2022',
+                '07/01/2022',
+                '08/01/2022',
+                '09/01/2022',
+                '10/01/2022',
+                '11/01/2022',
+              ]}
+              chartData={[
+                {
+                  name: 'Users',
+                  type: 'area',
+                  fill: 'gradient',
+                  data: [44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43],
+                },
+                {
+                  name: 'User Reporting',
+                  type: 'line',
+                  fill: 'solid',
+                  data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39],
+                },
+                {
+                  name: 'Contractors',
+                  type: 'area',
+                  fill: 'gradient',
+                  data: [40, 50, 35, 42, 32, 50, 31, 41, 26, 23, 53],
+                },
+                {
+                  name: 'Contractor Reporting',
+                  type: 'line',
+                  fill: 'solid',
+                  data: [20, 45, 23, 41, 23, 25, 12, 42, 34, 61, 25],
+                },
+                {
+                  name: 'Government Reporting',
+                  type: 'line',
+                  fill: 'solid',
+                  data: [42, 12, 36, 40, 35, 23, 45, 16, 48, 41, 62],
+                },
+              ]}
+            />
+          </Grid>
+
+          <Grid item xs={12} md={6} lg={4}>
+            <AppCurrentVisits
+              title="Current Visits"
+              chartData={[
+                { label: 'Potholes', value: 4344 },
+                { label: 'Manholes', value: 545 },
+                { label: 'Street Lights', value: 1443 },
+                { label: 'Accidents', value: 443 },
+              ]}
+              chartColors={[
+                theme.palette.primary.main,
+                theme.palette.info.main,
+                theme.palette.warning.main,
+                theme.palette.error.main,
+              ]}
+            />
+          </Grid>
+
+          <Grid item xs={12} md={6} lg={4}>
+            <AppNewsUpdate
+              title="Recent Update"
+              list={[...Array(5)].map(() => ({
+                id: faker.datatype.uuid(),
+                title: faker.name.jobTitle(),
+                description: faker.name.jobTitle(),
+              }))}
+            />
+          </Grid>
+
+          <Grid item xs={12} md={6} lg={4}>
+            <AppOrderTimeline
+              title="Order Timeline"
+              list={[...Array(5)].map((_, index) => ({
+                id: faker.datatype.uuid(),
+                title: [
+                  '1983, orders, $4220',
+                  '12 Invoices have been paid',
+                  'Order #37745 from September',
+                  'New order placed #XF-2356',
+                  'New order placed #XF-2346',
+                ][index],
+                type: `order${index + 1}`,
+                time: faker.date.past(),
+              }))}
+            />
+          </Grid>
+
+          <Grid item xs={12} md={6} lg={4}>
+            <AppCurrentSubject
+              title="Current Reporting"
+              chartLabels={['Potholes', 'Manholes', 'Street Lights', 'Accidents']}
+              chartData={[
+                { name: 'Users', data: [80, 50, 30, 40] },
+                { name: 'Contractors', data: [20, 30, 40, 80] },
+                { name: 'Government', data: [44, 76, 78, 13] },
+              ]}
+              chartColors={[...Array(6)].map(() => theme.palette.text.secondary)}
+            />
+          </Grid>
+
+        </Grid>
+      </Container>
+    </>
+  );
+}
