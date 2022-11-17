@@ -1,9 +1,12 @@
+/* eslint-disable react/jsx-boolean-value */
 import { Helmet } from 'react-helmet-async';
 import { faker } from '@faker-js/faker';
 // @mui
 import { useTheme } from '@mui/material/styles';
 import { Grid, Container, Typography } from '@mui/material';
 // components
+import ChatBot from 'react-simple-chatbot';
+// import { ThemeProvider } from '@mui/material/styles';
 import Iconify from '../components/iconify';
 // sections
 import {
@@ -22,6 +25,31 @@ import {
 
 export default function DashboardAppPage() {
   const theme = useTheme();
+
+  const steps = [
+    {
+      id: '1',
+      message: 'Hello, Welcome Mr. Modiji',
+      trigger: '2',
+    },
+    {
+      id: '2',
+      options: [
+        { value: 1, label: 'Deiffernce between applications and my tenders ?', trigger: '4' },
+        { value: 2, label: 'How to see an accident or an issue ?', trigger: '3' },
+      ],
+    },
+    {
+      id: '3',
+      message: 'Click the map button to see. you can also share this lcation to concerned authority.',
+      trigger: '2',
+    },
+    {
+      id: '4',
+      message: 'Applications are proposals built by contractors without the tender issued by government. Tenders are issued by the government where contractors apply and place bids.',
+      end: true,
+    },
+  ];
 
   return (
     <>
@@ -163,6 +191,8 @@ export default function DashboardAppPage() {
             />
           </Grid>
 
+          <ChatBot steps={steps} floating={true} recognitionEnable={true} />
+        
         </Grid>
       </Container>
     </>
