@@ -123,7 +123,7 @@ export default function DashboardAppPage() {
 
           <Grid item xs={12} md={6} lg={4}>
             <AppNewsUpdate
-              title="Recent Update"
+              title="Recent Tenders"
               list={[...Array(5)].map(() => ({
                 id: faker.datatype.uuid(),
                 title: faker.name.jobTitle(),
@@ -134,15 +134,15 @@ export default function DashboardAppPage() {
 
           <Grid item xs={12} md={6} lg={4}>
             <AppOrderTimeline
-              title="Order Timeline"
+              title="In past 24 Hours"
               list={[...Array(5)].map((_, index) => ({
                 id: faker.datatype.uuid(),
                 title: [
-                  '1983, orders, $4220',
-                  '12 Invoices have been paid',
-                  'Order #37745 from September',
-                  'New order placed #XF-2356',
-                  'New order placed #XF-2346',
+                  '524 users onboraded',
+                  '12 Tender requests recived',
+                  '126 Potholes reported',
+                  '21 Manholes reported',
+                  '4 Accidnets reported',
                 ][index],
                 type: `order${index + 1}`,
                 time: faker.date.past(),

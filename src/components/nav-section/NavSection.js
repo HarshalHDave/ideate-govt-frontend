@@ -39,7 +39,8 @@ function NavItem({ item }) {
       sx={{
         '&.active': {
           color: 'text.primary',
-          bgcolor: 'action.selected',
+          bgcolor: '#8ec0fc',
+          // bgcolor: 'action.selected',
           fontWeight: 'fontWeightBold',
         },
       }}

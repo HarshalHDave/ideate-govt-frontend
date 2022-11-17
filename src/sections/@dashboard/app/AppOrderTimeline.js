@@ -67,7 +67,7 @@ function OrderItem({ item, isLast }) {
         <Typography variant="subtitle2">{title}</Typography>
 
         <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-          {fDateTime(time)}
+          Recently on {fDateTime(time)}
         </Typography>
       </TimelineContent>
     </TimelineItem>
