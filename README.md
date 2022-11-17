@@ -2,9 +2,10 @@
 
 - [Dashboard](/dashboard/app)
 - [Users](/dashboard/user)
-- [Product](/dashboard/products)
-- [Blog](/dashboard/blog)
 - [Login](/login)
+- [Road Issues](/road-issues)
+- [Accidents](/accidents)
+- [Tenders](/tenders)
 - [Not Found](/404)
 
 ## Getting started
