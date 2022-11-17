@@ -268,7 +268,7 @@ export default function TenderPage() {
                 }}
             >
                 <MenuItem sx={{ color: 'success.main' }}>
-                    <Iconify icon={'fluent-mdl2:accept-medium'} sx={{ mr: 2 }} />
+                    <Iconify icon={'material-symbols:done-rounded'} sx={{ mr: 2 }} />
                     Accept
                 </MenuItem>
 

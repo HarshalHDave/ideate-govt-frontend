@@ -268,9 +268,9 @@ export default function AccidentPage() {
                     },
                 }}
             >
-                <MenuItem>
-                    <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
-                    Edit
+                <MenuItem sx={{ color: 'success.main' }}>
+                    <Iconify icon={'material-symbols:done-rounded'} sx={{ mr: 2 }} />
+                    Resolved
                 </MenuItem>
 
                 <MenuItem sx={{ color: 'error.main' }}>

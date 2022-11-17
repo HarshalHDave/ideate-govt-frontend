@@ -17,6 +17,7 @@ import USERLIST from '../_mock/user';
 
 const TABLE_HEAD = [
   { id: 'id', label: 'ID', alignRight: false },
+  { id: 'type', label: 'Type', alignRight: false },
   { id: 'text', label: 'Description', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
   { id: '', label: 'See Map' },
@@ -159,7 +160,7 @@ export default function RoadIssuePage() {
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, text, status, avatarUrl } = row;
+                    const { id, type, text, status, avatarUrl } = row;
                     const selectedUser = selected.indexOf(text) !== -1;
 
                     return (
@@ -177,8 +178,10 @@ export default function RoadIssuePage() {
                           </Stack>
                         </TableCell>
 
+                        <TableCell align="left">{type}</TableCell>
+
                         <TableCell align="left">{text}</TableCell>
-                        
+
                         <TableCell align="left">
                           <Label color={(status === 'unresolved' && 'error') || 'success'}>{sentenceCase(status)}</Label>
                         </TableCell>
@@ -261,9 +264,9 @@ export default function RoadIssuePage() {
           },
         }}
       >
-        <MenuItem>
-          <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
-          Edit
+        <MenuItem sx={{ color: 'success.main' }}>
+          <Iconify icon={'material-symbols:done-rounded'} sx={{ mr: 2 }} />
+          Resolved
         </MenuItem>
 
         <MenuItem sx={{ color: 'error.main' }}>
