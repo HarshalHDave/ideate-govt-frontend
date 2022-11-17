@@ -1,7 +1,6 @@
 ## Page demo
 
 - [Dashboard](/dashboard/app)
-- [Users](/dashboard/user)
 - [Login](/login)
 - [Road Issues](/road-issues)
 - [Accidents](/accidents)
