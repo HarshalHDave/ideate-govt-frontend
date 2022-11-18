@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 // @mui
 import { Card, Table, Stack, Paper, Avatar, Button, Popover, Checkbox, TableRow, MenuItem, TableBody, TableCell, Container, Typography, IconButton, TableContainer, TablePagination, } from '@mui/material';
 // components
@@ -11,7 +11,7 @@ import Scrollbar from '../components/scrollbar';
 // sections
 import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock
-import USERLIST from '../_mock/user';
+import getUserList from '../_mock/user';
 
 // ----------------------------------------------------------------------
 
@@ -56,6 +56,12 @@ function applySortFilter(array, comparator, query) {
 }
 
 export default function RoadIssuePage() {
+
+  useEffect(() => {
+    getUserList().then(val=>{
+      setUserList(val);
+    })
+  },[]);
   const [open, setOpen] = useState(null);
 
   const [page, setPage] = useState(0);
@@ -69,7 +75,7 @@ export default function RoadIssuePage() {
   const [filterName, setFilterName] = useState('');
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
-
+  const [userList, setUserList] = useState([]);
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
   };
@@ -122,9 +128,21 @@ export default function RoadIssuePage() {
     setFilterName(event.target.value);
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - USERLIST.length) : 0;
+  const handleMapCLick = (lat,lng) => {
+    console.log(lat,lng);
+    let loc = lng ;
+    loc+= ",";
+    loc+= lat;
+    let url ="https://adityapai18.github.io/unl_project/landing_page/";
+    url += '?loc=';
+    url += window.btoa(loc);
+    console.log(url)
+    window.open(url, "_blank");
+  }
 
-  const filteredUsers = applySortFilter(USERLIST, getComparator(order, orderBy), filterName);
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - userList.length) : 0;
+
+  const filteredUsers = applySortFilter(userList, getComparator(order, orderBy), filterName);
 
   const isNotFound = !filteredUsers.length && !!filterName;
 
@@ -154,13 +172,13 @@ export default function RoadIssuePage() {
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={USERLIST.length}
+                  rowCount={userList.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, type, text, status, avatarUrl } = row;
+                    const { id, type, text, status, avatarUrl , lat , long } = row;
                     const selectedUser = selected.indexOf(text) !== -1;
 
                     return (
@@ -187,7 +205,7 @@ export default function RoadIssuePage() {
                         </TableCell>
 
                         <TableCell align="left">
-                          <Button variant="contained" startIcon={<Iconify icon="material-symbols:map" />}>
+                          <Button onClick={()=>handleMapCLick(lat,long)} variant="contained" startIcon={<Iconify icon="material-symbols:map" />}>
                             Map
                           </Button>
                         </TableCell>
@@ -237,7 +255,7 @@ export default function RoadIssuePage() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={USERLIST.length}
+            count={userList.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
