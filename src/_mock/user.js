@@ -68,6 +68,8 @@ export const getUserAccidentList = async () => {
   // users.push();
 };
 
+
+
 // const users = [].map((_, index) => ({
 //   id: faker.phone.number('####'),
 //   avatarUrl: `/assets/images/avatars/avatar_${index + 1}.jpg`,

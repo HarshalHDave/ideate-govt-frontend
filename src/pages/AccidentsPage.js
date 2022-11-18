@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
-import { useState , useEffect} from 'react';
+import { useState, useEffect } from 'react';
 // @mui
 import {
   Card,
@@ -29,7 +29,7 @@ import Scrollbar from '../components/scrollbar';
 // sections
 import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock
-import {getUserAccidentList} from '../_mock/user';
+import { getUserAccidentList } from '../_mock/user';
 
 // ----------------------------------------------------------------------
 
@@ -69,21 +69,21 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (_user) => _user.id.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(array, (_user) => _user.id.toString().toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
   return stabilizedThis.map((el) => el[0]);
 }
-const handleMapCLick = (lat,lng) => {
-    console.log(lat,lng);
-    let loc = lng ;
-    loc+= ",";
-    loc+= lat;
-    let url ="https://adityapai18.github.io/unl_project/landing_page/";
-    url += '?loc=';
-    url += window.btoa(loc);
-    console.log(url)
-    window.open(url, "_blank");
-  }
+const handleMapCLick = (lat, lng) => {
+  console.log(lat, lng);
+  let loc = lng;
+  loc += ',';
+  loc += lat;
+  let url = 'https://adityapai18.github.io/unl_project/landing_page/';
+  url += '?loc=';
+  url += window.btoa(loc);
+  console.log(url);
+  window.open(url, '_blank');
+};
 
 export default function AccidentPage() {
   useEffect(() => {
@@ -91,6 +91,31 @@ export default function AccidentPage() {
       setUserList(val);
     });
   }, []);
+
+  const updateOrDelete = async (type) => {
+    if (type === 'resolve') {
+      const apiRes = await fetch(`http://localhost:5000/admin/reports/update/${currId}`, {
+        method: 'PUT',
+        headers: {
+          accept: 'application/json',
+          Authorization:
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwicGhvbmUiOiJpN2NkeTA4MWptIiwiaWF0IjoxNjY4Njg5ODg0LCJleHAiOjE2NjkyODk4ODR9.ud2hjSxBDx33iVRTdJ6IYV_WA_mFqWAJN1wzPwd3FPE',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          isActive: false,
+        }),
+      });
+      const response = await apiRes.json();
+      if (response.status === 'SUCCESS') {
+        getUserAccidentList().then((val) => {
+          setUserList(val);
+        });
+      }
+    } else {
+      console.log(currId);
+    }
+  };
   const [open, setOpen] = useState(null);
 
   const [page, setPage] = useState(0);
@@ -105,7 +130,9 @@ export default function AccidentPage() {
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [userList, setUserList] = useState([]);
-  const handleOpenMenu = (event) => {
+  const [currId, setcurrId] = useState();
+  const handleOpenMenu = (event, id) => {
+    setcurrId(id);
     setOpen(event.currentTarget);
   };
 
@@ -174,8 +201,12 @@ export default function AccidentPage() {
           <Typography variant="h4" gutterBottom>
             Accidents
           </Typography>
-          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-            Reoprt an Accident
+          <Button
+            onClick={() => window.open('https://adityapai18.github.io/unl_project/report_page/', '_blank')}
+            variant="contained"
+            startIcon={<Iconify icon="eva:plus-fill" />}
+          >
+            Report an Accident
           </Button>
         </Stack>
 
@@ -195,7 +226,7 @@ export default function AccidentPage() {
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, text, pocname, status, pocnum, avatarUrl , lat ,long } = row;
+                    const { id, text, pocname, status, pocnum, avatarUrl, lat, long } = row;
                     const selectedUser = selected.indexOf(text) !== -1;
 
                     return (
@@ -226,13 +257,17 @@ export default function AccidentPage() {
                         </TableCell>
 
                         <TableCell align="left">
-                          <Button variant="contained" onClick={()=>handleMapCLick(lat,long)}  startIcon={<Iconify icon="material-symbols:map" />}>
+                          <Button
+                            variant="contained"
+                            onClick={() => handleMapCLick(lat, long)}
+                            startIcon={<Iconify icon="material-symbols:map" />}
+                          >
                             Map
                           </Button>
                         </TableCell>
 
                         <TableCell align="right">
-                          <IconButton size="large" color="inherit" onClick={handleOpenMenu}>
+                          <IconButton size="large" color="inherit" onClick={(event) => handleOpenMenu(event, id)}>
                             <Iconify icon={'eva:more-vertical-fill'} />
                           </IconButton>
                         </TableCell>
@@ -303,12 +338,12 @@ export default function AccidentPage() {
           },
         }}
       >
-        <MenuItem sx={{ color: 'success.main' }}>
+        <MenuItem sx={{ color: 'success.main' }} onClick={() => updateOrDelete('resolve')}>
           <Iconify icon={'material-symbols:done-rounded'} sx={{ mr: 2 }} />
           Resolved
         </MenuItem>
 
-        <MenuItem sx={{ color: 'error.main' }}>
+        <MenuItem sx={{ color: 'error.main' }} onClick={() => updateOrDelete('delete')}>
           <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
           Delete
         </MenuItem>

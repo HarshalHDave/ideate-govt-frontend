@@ -3,7 +3,25 @@ import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
 import { useEffect, useState } from 'react';
 // @mui
-import { Card, Table, Stack, Paper, Avatar, Button, Popover, Checkbox, TableRow, MenuItem, TableBody, TableCell, Container, Typography, IconButton, TableContainer, TablePagination, } from '@mui/material';
+import {
+  Card,
+  Table,
+  Stack,
+  Paper,
+  Avatar,
+  Button,
+  Popover,
+  Checkbox,
+  TableRow,
+  MenuItem,
+  TableBody,
+  TableCell,
+  Container,
+  Typography,
+  IconButton,
+  TableContainer,
+  TablePagination,
+} from '@mui/material';
 // components
 import Label from '../components/label';
 import Iconify from '../components/iconify';
@@ -50,18 +68,18 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (_user) => _user.id.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    // console.log(array);
+    return filter(array, (_user) => _user.id.toString().toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
   return stabilizedThis.map((el) => el[0]);
 }
 
 export default function RoadIssuePage() {
-
   useEffect(() => {
-    getUserList().then(val=>{
+    getUserList().then((val) => {
       setUserList(val);
-    })
-  },[]);
+    });
+  }, []);
   const [open, setOpen] = useState(null);
 
   const [page, setPage] = useState(0);
@@ -76,8 +94,10 @@ export default function RoadIssuePage() {
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [userList, setUserList] = useState([]);
-  const handleOpenMenu = (event) => {
+  const [currId, setcurrId] = useState();
+  const handleOpenMenu = (event, id) => {
     setOpen(event.currentTarget);
+    setcurrId(id);
   };
 
   const handleCloseMenu = () => {
@@ -113,6 +133,30 @@ export default function RoadIssuePage() {
   //   }
   //   setSelected(newSelected);
   // };
+  const updateOrDelete = async (type) => {
+    if (type === 'resolve') {
+      const apiRes = await fetch(`http://localhost:5000/admin/reports/update/${currId}`, {
+        method: 'PUT',
+        headers: {
+          accept: 'application/json',
+          Authorization:
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwicGhvbmUiOiJpN2NkeTA4MWptIiwiaWF0IjoxNjY4Njg5ODg0LCJleHAiOjE2NjkyODk4ODR9.ud2hjSxBDx33iVRTdJ6IYV_WA_mFqWAJN1wzPwd3FPE',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          isActive: false,
+        }),
+      });
+      const response = await apiRes.json();
+      if (response.status === 'SUCCESS') {
+        getUserList().then((val) => {
+          setUserList(val);
+        });
+      }
+    } else {
+      console.log(currId);
+    }
+  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -126,19 +170,20 @@ export default function RoadIssuePage() {
   const handleFilterByName = (event) => {
     setPage(0);
     setFilterName(event.target.value);
+    console.log(event.target.value);
   };
 
-  const handleMapCLick = (lat,lng) => {
-    console.log(lat,lng);
-    let loc = lng ;
-    loc+= ",";
-    loc+= lat;
-    let url ="https://adityapai18.github.io/unl_project/landing_page/";
+  const handleMapCLick = (lat, lng) => {
+    console.log(lat, lng);
+    let loc = lng;
+    loc += ',';
+    loc += lat;
+    let url = 'https://adityapai18.github.io/unl_project/landing_page/';
     url += '?loc=';
     url += window.btoa(loc);
-    console.log(url)
-    window.open(url, "_blank");
-  }
+    console.log(url);
+    window.open(url, '_blank');
+  };
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - userList.length) : 0;
 
@@ -157,7 +202,11 @@ export default function RoadIssuePage() {
           <Typography variant="h4" gutterBottom>
             Issues related to Potholes, Manholes and Street Lights
           </Typography>
-          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
+          <Button
+            onClick={() => window.open('https://adityapai18.github.io/unl_project/report_page/', '_blank')}
+            variant="contained"
+            startIcon={<Iconify icon="eva:plus-fill" />}
+          >
             Raise an Issue
           </Button>
         </Stack>
@@ -178,7 +227,7 @@ export default function RoadIssuePage() {
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, type, text, status, avatarUrl , lat , long } = row;
+                    const { id, type, text, status, avatarUrl, lat, long } = row;
                     const selectedUser = selected.indexOf(text) !== -1;
 
                     return (
@@ -201,17 +250,23 @@ export default function RoadIssuePage() {
                         <TableCell align="left">{text}</TableCell>
 
                         <TableCell align="left">
-                          <Label color={(status === 'unresolved' && 'error') || 'success'}>{sentenceCase(status)}</Label>
+                          <Label color={(status === 'unresolved' && 'error') || 'success'}>
+                            {sentenceCase(status)}
+                          </Label>
                         </TableCell>
 
                         <TableCell align="left">
-                          <Button onClick={()=>handleMapCLick(lat,long)} variant="contained" startIcon={<Iconify icon="material-symbols:map" />}>
+                          <Button
+                            onClick={() => handleMapCLick(lat, long)}
+                            variant="contained"
+                            startIcon={<Iconify icon="material-symbols:map" />}
+                          >
                             Map
                           </Button>
                         </TableCell>
 
                         <TableCell align="right">
-                          <IconButton size="large" color="inherit" onClick={handleOpenMenu}>
+                          <IconButton size="large" color="inherit" onClick={(event) => handleOpenMenu(event, id)}>
                             <Iconify icon={'eva:more-vertical-fill'} />
                           </IconButton>
                         </TableCell>
@@ -282,12 +337,12 @@ export default function RoadIssuePage() {
           },
         }}
       >
-        <MenuItem sx={{ color: 'success.main' }}>
+        <MenuItem sx={{ color: 'success.main' }} onClick={() => updateOrDelete('resolve')}>
           <Iconify icon={'material-symbols:done-rounded'} sx={{ mr: 2 }} />
           Resolved
         </MenuItem>
 
-        <MenuItem sx={{ color: 'error.main' }}>
+        <MenuItem sx={{ color: 'error.main' }}  onClick={() => updateOrDelete('delete')}>
           <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
           Delete
         </MenuItem>
