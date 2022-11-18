@@ -16,10 +16,13 @@ const getUserList = async () => {
   const result = await apiRes.json();
   // console.log(result.data.data);
   result.data.data.forEach((val) => {
+    let url = 'http://localhost:5000/';
+    url+=val.img;
+    console.log(url)
     if (val.type !== 'accidents')
       users.push({
         id: val.id,
-        avatarUrl: val.img,
+        avatarUrl: url,
         type: val.type,
         pocname: val.pocname,
         pocnum: val.pocnum,
